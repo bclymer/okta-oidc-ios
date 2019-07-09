@@ -25,6 +25,7 @@
 #import "OIDExternalUserAgentSession.h"
 #import "OIDExternalUserAgentRequest.h"
 
+
 NS_ASSUME_NONNULL_BEGIN
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 130000
@@ -66,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 
   _externalUserAgentFlowInProgress = YES;
   _session = session;
-  BOOL openedUserAgent = NO;
+  __block BOOL openedUserAgent = NO;
   NSURL *requestURL = [request externalUserAgentRequestURL];
 
   // iOS 12 and later, use ASWebAuthenticationSession
@@ -101,7 +102,14 @@ NS_ASSUME_NONNULL_BEGIN
         }
 #endif
       _webAuthenticationVC = authenticationVC;
-      openedUserAgent = [authenticationVC start];
+      if ([NSThread isMainThread]) {
+          openedUserAgent = [authenticationVC start];
+      } else {
+          dispatch_sync(dispatch_get_main_queue(), ^{
+              openedUserAgent = [authenticationVC start];
+          });
+      }
+      
     }
   }
   // iOS 11, use SFAuthenticationSession
@@ -131,6 +139,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
       }];
       _authenticationVC = authenticationVC;
+    
       openedUserAgent = [authenticationVC start];
     }
   }
