@@ -15,6 +15,7 @@ let package = Package(
     targets: [
         .target(
             name: "OktaOidc",
-            dependencies: []),
+            dependencies: ["AppAuth"]),
+        .target(name: "AppAuth", dependencies: [])
     ]
 )

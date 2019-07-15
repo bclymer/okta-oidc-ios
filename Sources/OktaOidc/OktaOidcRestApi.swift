@@ -10,6 +10,9 @@
  * See the License for the specific language governing permissions and limitations under the License.
  */
 
+import AppAuth
+import Foundation
+
 protocol OktaOidcHttpApiProtocol {
     typealias OktaApiSuccessCallback = ([String: Any]?) -> Void
     typealias OktaApiErrorCallback = (OktaOidcError) -> Void
